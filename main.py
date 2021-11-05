@@ -3,6 +3,7 @@
 
 from typing import List, Dict, Optional
 from abc import ABC, abstractmethod
+import re
 
 
 class Product:
@@ -19,20 +20,35 @@ class Product:
 
     # TODO: Dodać wyjątek ValueError
 
-
-class TooManyProductsFoundError:
-    # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
+class ServerError(Exception):
     pass
+    # def __init__(self, server, msg=None):
+    #     if msg is None:
+    #         msg = f"An error occured with server {server}"
+    #     super().__init__(msg)
+    #     self.server = server
+
+class TooManyProductsFoundError(ServerError, ValueError):
+    pass
+    # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
+    # def __init__(self, msg):
+    #     super().__init__(msg)
 
 
 class Server(ABC):
-    n_max_returned_intries= int
+    n_max_returned_entries: int = 3
 
     def __init__(self, *args, **kwargs):
         super.__init__(*args,**kwargs)
 
+    def get_entries_len_check(self, n_letters: Optional[int]=1) -> List[Product]:
+        if len(self.products) > Server.n_max_returned_entries:
+            raise TooManyProductsFoundError("Too many products on server.")
+
+
     @abstractmethod
-    def get_entries(self, n_letters: Optional[int]=1): List[Product]
+    def _get_entries(self, n_letters: Optional[int] = 1) -> List[Product]:
+        raise NotImplementedError
 
 # FIXME: Każada z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
@@ -45,10 +61,13 @@ class ListServer(Server):
         super.__init__(*args, *kwargs)
 
     def get_entries(self, n_letters: Optional[int]=1) -> List[Product]:
-
-
-
-
+        matching_products: List[Product] = []
+        for iteration, prod in enumerate(self.products):
+            if iteration > 2:
+                raise TooManyProductsFoundError
+            if re.match("^[a-zA-Z]{n_letters}[0-9]{2,3}".format(n_letters=n_letters), prod.name):
+                matching_products.append(prod)
+        return matching_products
 
 class MapServer(Server):
     def __init__(self, products: List[Product], *args, **kwargs):
@@ -57,13 +76,17 @@ class MapServer(Server):
 
     def get_entries(self, n_letters: Optional[int] = 1) -> List[Product]:
         matching_products: List[Product] = []
-        for prod in self.products:
-            if prod.name
-
+        for iteration, (name, prod) in enumerate(self.products.items()):
+            if iteration > 2:
+                raise TooManyProductsFoundError
+            if re.fullmatch("^[a-zA-Z]{n_letters}[0-9]{2,3}".format(n_letters=n_letters), prod.name):
+                matching_products.append(prod)
+        return matching_products
 
 class Client:
     def __init__(self, server: Server):
         self.server = server
+    #def get_total_price(self, n_letters: Optional[int]): Optional[float]
+        #for product in self.server:
+         #   pass
 
-    def get_total_price(self, n_letters: Optional[int]): Optional[float]
-        raise NotImplementedError()
