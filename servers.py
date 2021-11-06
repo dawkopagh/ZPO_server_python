@@ -39,10 +39,10 @@ class Server(ABC):
     n_max_returned_entries: int = 3
 
     def __init__(self, *args, **kwargs):
-        super.__init__(*args,**kwargs)
+        super().__init__(*args,**kwargs)
 
     def get_entries_common(self, n_letters: Optional[int]=1) -> List[Product]:
-        match_pattern = "^[a-zA-Z]{n_letters}[0-9]{2,3}".format(n_letters=n_letters)
+        match_pattern = "^[a-zA-Z]{{{n_letters}}}[0-9]{{2,3}}$".format(n_letters=n_letters)
         entries_list = [product for product in self._get_entries() if re.match(match_pattern,product.name)]
         if len(entries_list) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError("Too many products on server.")
