@@ -74,7 +74,7 @@ class ListServer(Server):
 
 class MapServer(Server):
     def __init__(self, products: List[Product], *args, **kwargs):
-        self.products = {elem.name: elem for elem in products}
+        self.products: Dict[str, Product] = {elem.name: elem for elem in products}
         super().__init__(*args, *kwargs)
 
     def _get_entries(self, n_letters: Optional[int] = 1) -> List[Product]:
