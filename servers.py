@@ -31,7 +31,11 @@ class Product:
         self.name:str = name
         self.price:float = price
 
+    def __eq__(self, other)->bool:
+        return self.name == other.name and self.price == other.price
 
+    def __hash__(self):
+        return hash((self.name,self.price))
 
 
 
@@ -41,8 +45,15 @@ class Product:
     # TODO: Dodać wyjątek ValueError
 
 
-class TooManyProductsFoundError:
+class TooManyProductsFoundError(Exception): #Wyjątek zdefiniowany przez użytkownika
+
+    def __init__(self,length:int,msg = None):
+        if msg is None:
+            msg: str = f"The length of the list is above the limit equal to :{length}"
+        super().__init__(msg)#Wywołanie konstruktora klasy 'Exception'
+        self.length=length
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
+
     pass
 
 
