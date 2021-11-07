@@ -6,7 +6,7 @@ class Server
 }
 class ListServer
 {
- +products:List[Optional[Product]2]
+ +products:List[Optional[Product]]
  +get_entries(n_letters:Optional[int]):List[Optional[Product]]
 }
 class MapServer
