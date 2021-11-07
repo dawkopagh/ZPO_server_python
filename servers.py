@@ -58,13 +58,13 @@ class TooManyProductsFoundError(Exception): #Wyjątek zdefiniowany przez użytko
 
 
 class Server(ABC):
-    n_max_returned_intries= int
+    n_max_returned_intries= int=3
 
-    def __init__(self, *args, **kwargs):
-        super.__init__(*args,**kwargs)
+
 
     @abstractmethod
-    def get_entries(self, n_letters: Optional[int]=1): List[Product]
+    def get_entries(self, n_letters: Optional[int]=1)-> List[Optional[Product]]:
+        raise NotImplementedError
 
 # FIXME: Każada z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
@@ -72,11 +72,11 @@ class Server(ABC):
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
 
 class ListServer(Server):
-    def __init__(self, products: List[Product], *args, **kwargs):
-        self.products = products
-        super.__init__(*args, *kwargs)
+    def __init__(self, products: List[Product]):
+        self.products = List[Product] = deepcopy(products)
 
-    def get_entries(self, n_letters: Optional[int]=1) -> List[Product]:
+
+    def get_entries(self, n_letters: Optional[int]=1) -> List[Optional[Product]]:
 
 
 
@@ -94,8 +94,18 @@ class MapServer(Server):
 
 
 class Client:
-    def __init__(self, server: Server):
-        self.server = server
+    def __init__(self, server: Union[ListServer,MapServer]):
+        self.server:Union[ListServer, MapServer] = server
 
-    def get_total_price(self, n_letters: Optional[int]): Optional[float]
-        raise NotImplementedError()
+    def get_total_price(self, n_letters: Optional[int])->Optional[float]:
+        try:
+            lst:List= self.server.get_entries(n_letters)
+        except TooManyProductsFoundError:
+            return None
+        if not lst:
+            return None
+        else:
+            sum:int = 0
+            for i in lst:
+                sum+=i.price
+            return sum
