@@ -1,21 +1,42 @@
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from typing import List, Dict, Optional
+from typing import Optional, List, Dict, Union
 from abc import ABC, abstractmethod
-
+import re
+from copy import deepcopy
 
 class Product:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
-    def __init__(self,name: str, price: float):
-        self.name = name
-        self.price = price
+    def is_name_correct(self, name: str) -> bool:
+        if not name[0].isalpha():
+            return False
+        else:
+            i: int = 1
+            while i < len(name) and name[i].isalpha():
+                i += 1
+            if i >= len(name):
+                return False
+            while i < len(name) and name[i].isdecimal():
+                i += 1
+            if i >= len(name):
+                return True
+        return False
 
-    def __eq__(self, other):
-        return self.name == other.name and self.price == other.price  # FIXME: zwróć odpowiednią wartość
+    def __init__(self,name:str,price:float) ->None:
+        if not self.is_name_correct(name):
+            raise ValueError
 
-    def __hash__(self):
-        return hash((self.name, self.price))
+        self.name:str = name
+        self.price:float = price
+
+
+
+
+
+
+
 
     # TODO: Dodać wyjątek ValueError
 
