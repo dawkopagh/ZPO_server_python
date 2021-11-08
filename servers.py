@@ -60,8 +60,6 @@ class TooManyProductsFoundError(Exception): #Wyjątek zdefiniowany przez użytko
 class Server(ABC):
     n_max_returned_intries= int=3
 
-
-
     @abstractmethod
     def get_entries(self, n_letters: Optional[int]=1)-> List[Optional[Product]]:
         raise NotImplementedError
@@ -73,10 +71,16 @@ class Server(ABC):
 
 class ListServer(Server):
     def __init__(self, products: List[Product]):
-        self.products = List[Product] = deepcopy(products)
+        self.products: List[Product] = deepcopy(products)
+
 
 
     def get_entries(self, n_letters: Optional[int]=1) -> List[Optional[Product]]:
+        lst : List = []
+        for i in self.products:
+            if re.fullmatch()
+
+
 
 
 
