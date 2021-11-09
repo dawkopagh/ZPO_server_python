@@ -75,10 +75,18 @@ class ListServer(Server):
 
 
 
-    def get_entries(self, n_letters: Optional[int]=1) -> List[Optional[Product]]:
-        lst : List = []
+    def get_entries(self, n_letters: Optional[int] = 1) -> List[Optional[Product]]:
+        lst: List = []
         for i in self.products:
-            if re.fullmatch()
+            if re.fullmatch(r'^[a-zA-Z]{' + str(n_letters) + r'}\d{2,3}$', i.name):
+                lst.append(i)
+        if len(lst) > Server.n_max_returned_entries:
+            raise TooManyProductsFoundError(Server.n_max_returned_entries)
+        else:
+            return sorted(lst, key=lambda product: product.price)
+
+
+
 
 
 
@@ -87,15 +95,18 @@ class ListServer(Server):
 
 
 class MapServer(Server):
-    def __init__(self, products: List[Product], *args, **kwargs):
-        self.products = {elem.name : elem for elem in products}
-        super.__init__(*args, *kwargs)
+    def __init__(self, products: List[Product]):
+        self.products: Dict[str: float] = {product.name: product.price for product in products}
 
-    def get_entries(self, n_letters: Optional[int] = 1) -> List[Product]:
-        matching_products: List[Product] = []
-        for prod in self.products:
-            if prod.name
-
+    def get_entries(self, n_letters: Optional[int] = 1) -> List[Optional[Product]]:
+        lst = []
+        for i in self.products.keys():
+            if re.fullmatch(r'^[a-zA-Z]{' + str(n_letters) + r'}\d{2,3}$', i):
+                lst.append(Product(i, self.products[i]))
+        if len(lst) > Server.n_max_returned_entries:
+            raise TooManyProductsFoundError(Server.n_max_returned_entries)
+        else:
+            return sorted(lst, key=lambda product: product.price)
 
 class Client:
     def __init__(self, server: Union[ListServer,MapServer]):
@@ -113,3 +124,5 @@ class Client:
             for i in lst:
                 sum+=i.price
             return sum
+if __name__ == "__main__":
+    pass
