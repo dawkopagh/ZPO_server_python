@@ -43,9 +43,11 @@ class Product:
 
 class TooManyProductsFoundError(Exception):
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
-    def __init__(self, length: int):
-        msg: str = f"The length of the list is above the limit equal to :{length}"
+    def __init__(self, length: int, msg = None):
+        if msg is None:
+            msg : str = f"The length of the list is above the limit equal to :{length}"
         super().__init__(msg)
+        self.length=length
 
     pass
 
