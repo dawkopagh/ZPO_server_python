@@ -1,5 +1,5 @@
 import unittest
-from servers import Client, Product, ListServer, MapServer, TooManyProductsFoundError
+from servers import Client, Product, Server, ListServer, MapServer, TooManyProductsFoundError
 from collections import Counter
 
 server_types = MapServer, ListServer
@@ -7,7 +7,7 @@ server_types = MapServer, ListServer
 
 class ClientTest(unittest.TestCase):
     def test_price_equal_zero_if_exception(self):
-        products = [Product('ABC2137', 2)] * 4
+        products = [Product('ABC2137', 2)] * (Server.n_max_returned_entries+1)
         server = ListServer(products)
         client = Client(server)
 
@@ -47,6 +47,7 @@ class ExceptTest(unittest.TestCase):
             for server_type in server_types:
                 server = server_type(products)
                 return server.get_entries(2)
+
 
 if __name__ == '__main__':
     unittest.main()
