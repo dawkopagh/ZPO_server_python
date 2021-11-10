@@ -25,6 +25,7 @@ class Product:
 
 
 class ServerError(Exception):
+
     def __init__(self, server, msg=None):
         if msg is None:
             msg = f"An error occured with server {server}"
@@ -33,7 +34,7 @@ class ServerError(Exception):
 
 
 class TooManyProductsFoundError(ServerError, ValueError):
-    # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
+
     def __init__(self, msg):
         super().__init__(msg)
 
