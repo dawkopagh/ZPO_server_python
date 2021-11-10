@@ -4,13 +4,14 @@ hide empty members
 abstract class Server {
   + {static} n_max_returned_entries:int
   + __init__(self, *args, **kwargs)
-  + {abstract} get_entries(n_letters: Optional[int]=1): List[Optional[Product]]
+  + get_entries(self, n_letters: Optional[int]=1): List[Optional[Product]]
+  + {abstract} _get_products_list(self, n_letters: Optional[int] = 1): List[Product]
 }
 
 class ListServer {
   + products: List[Product]
   + __init__(self, product: List[Product], *args, **kwargs)
-  + get_entries(n_letters:Optional[int]): List[Optional[Product]]
+  + _get_products_list(n_letters:Optional[int]): List[Optional[Product]]
 }
 
 Server <|-- ListServer
@@ -19,7 +20,7 @@ ListServer "1" *-- "*" Product
 class MapServer {
   + products: Dict[str, Product]
   + __init__(self, product: List[Product], *args, **kwargs)
-  + get_entries(n_letters:Optional[int]): List[Optional[Product]]
+  + _get_products_list(n_letters:Optional[int]): List[Optional[Product]]
 }
 
 Server <|-- MapServer
@@ -39,8 +40,9 @@ class Product {
   + price: float
 }
 
-class TooManyProductsFoundError { 
+class TooManyProductsFoundError {
 }
+
 
 Server ..> TooManyProductsFoundError: << throws >>
 @enduml
