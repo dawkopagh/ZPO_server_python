@@ -6,20 +6,33 @@ server_types = MapServer, ListServer
 
 
 class ClientTest(unittest.TestCase):
-    def test_price_equal_zero_if_exception(self):
+    def test_price_equal_None_if_no_matches(self):
         products = [Product('ABC2137', 2)] * (Server.n_max_returned_entries+1)
         server = ListServer(products)
         client = Client(server)
 
-        self.assertEqual(0, client.get_total_price(2))
+        self.assertEqual(None, client.get_total_price(2))
 
-    def test_total_price_for_normal_execution(self):
+    def test_total_price_for_too_many_products(self):
         products = [Product('PP234', 2), Product('PR235', 3), Product('PP235', 3), Product('PN235', 3)]
         for server_type in server_types:
             server = server_type(products)
             client = Client(server)
             self.assertEqual(None, client.get_total_price(2))
 
+    def test_total_price_is_none_if_no_products(self):
+        products = []
+        for server_type in server_types:
+            server = server_type(products)
+            client = Client(server)
+            self.assertEqual(None, client.get_total_price(2))
+
+    def test_total_price_for_correct_conditions(self):
+        products = [Product('PP234', 2), Product('PR235', 3)]
+        for server_type in server_types:
+            server = server_type(products)
+            client = Client(server)
+            self.assertEqual(5, client.get_total_price(2))
 
 class ServerTest(unittest.TestCase):
     def test_get_entries_returns_proper_entries(self):

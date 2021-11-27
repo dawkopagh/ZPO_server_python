@@ -88,6 +88,9 @@ class Client:
                 matching_products = self.server.get_entries()
             else:
                 matching_products = self.server.get_entries(n_letters)
-            return sum([product.price for product in matching_products])
         except TooManyProductsFoundError:
             return None
+        else:
+            if len(matching_products) == 0:
+                return None
+            return sum([product.price for product in matching_products])
